@@ -1,7 +1,9 @@
-#include <iostream>
-#include <vector>
-#include <random>
 #include <cmath>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <random>
+#include <vector>
 
 #include "vec3.hpp"
 #include "atom.hpp"
@@ -181,6 +183,41 @@ double compute_forces(std::vector<Atom>& atoms) {
   return U;
 }
 
+// Кинетическая энергия: K = sum 0.5 * v^2
+double kinetic_energy(const std::vector<Atom>& atoms) {
+  double K = 0.0;
+  for (int i = 0; i < N; ++i) {
+    K += 0.5 * atoms[i].v.norm2();
+  }
+  return K;
+}
+
+// Температура: T = 2K / (3N)
+double temperature(const std::vector<Atom>& atoms) {
+  return 2.0 * kinetic_energy(atoms) / (3.0 * N);
+}
+
+void write_xyz(const std::vector<Atom>& atoms, int step, const std::string& filename) {
+  std::ofstream out(filename, (step == 0) ? std::ios::trunc : std::ios::app);
+  out << N << "\n";
+  out << "step " << step << "\n";
+  for (int i = 0; i < N; ++i) {
+    out << "Ar "
+        << atoms[i].r.x << " "
+        << atoms[i].r.y << " "
+        << atoms[i].r.z << "\n";
+  }
+}
+
 int main() {
+  std::vector<Atom> atoms(N);
+
+  init_fcc(atoms);
+  init_velocities(atoms);
+  double U = compute_forces(atoms);
+
+  // Пишем начальную конфигурацию в XYZ
+  write_xyz(atoms, 0, "data/initial.xyz");
+
   return 0;
 }
