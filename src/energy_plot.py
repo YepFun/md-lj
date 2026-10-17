@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Загружаем данные из файла, пропуская первую строку с заголовками
+# Читаем данные
 try:
     data = np.loadtxt("data/diag.txt", skiprows=1)
 except FileNotFoundError:
@@ -21,13 +21,11 @@ plt.plot(steps, K, label='Kinetic Energy (K)', color='red')
 plt.plot(steps, U, label='Potential Energy (U)', color='blue')
 plt.plot(steps, E, label='Total Energy (E = K + U)', color='black')
 
-# Настройки внешнего вида
 plt.title('Energy Conservation')
 plt.xlabel('Step')
 plt.ylabel('Energy (LJ units)')
-plt.grid(True)
+plt.grid(True, alpha=0.4)
 plt.legend()
 plt.tight_layout()
 
-# Сохраняем график
-plt.savefig("data/energy_plot.png", dpi=300)
+plt.savefig("data/plots/energy_plot.png", dpi=300)
